@@ -1,0 +1,33 @@
+{
+  "name": "engineoil",
+  "version": "0.1.0",
+  "description": "Hive-Engine RPC caching layer",
+  "main": "app.mjs",
+  "scripts": {
+    "start": "node app.mjs"
+  },
+  "keywords": [
+    "hive",
+    "hive-engine"
+  ],
+  "author": "Reazul Iqbal",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "h3": "^1.6.6",
+    "ofetch": "^1.0.1",
+    "redis": "^4.6.6"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "xo": "^0.54.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/reazuliqbal/engineoil.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reazuliqbal/engineoil/issues"
+  },
+  "homepage": "https://github.com/reazuliqbal/engineoil#readme"
+}
