@@ -4,13 +4,12 @@ import {
   createApp,
   createRouter,
   eventHandler,
-  getMethod,
   readBody,
   sendNoContent,
   toNodeListener,
 } from 'h3';
 import { CACHE_KEY, PORT } from './config.mjs';
-import { isValidBody, makeRequest } from './helpers.mjs';
+import { isValidBody, logRequest, makeRequest } from './helpers.mjs';
 import redisClient from './libs/redis.mjs';
 
 const app = createApp();
@@ -27,9 +26,7 @@ app.use(
 
 app.use(
   eventHandler((event) => {
-    const method = getMethod(event);
-
-    if (method === 'OPTIONS') {
+    if (event.method === 'OPTIONS') {
       return sendNoContent(event);
     }
   }),
@@ -39,7 +36,9 @@ const router = createRouter();
 
 router.get(
   '/',
-  eventHandler(() => {
+  eventHandler((event, body) => {
+    logRequest(event, body);
+
     return makeRequest('GET', '/');
   }),
 );
@@ -49,6 +48,8 @@ router.post(
   eventHandler(async (event) => {
     const body = await isValidBody(event);
 
+    logRequest(event, body);
+
     return makeRequest('POST', '/', body);
   }),
 );
@@ -57,6 +58,8 @@ router.post(
   '/blockchain',
   eventHandler(async (event) => {
     const body = await readBody(event);
+
+    logRequest(event, body);
 
     if (
       body.method === 'getBlockInfo' &&
@@ -100,6 +103,8 @@ router.post(
   '/contracts',
   eventHandler(async (event) => {
     const body = await isValidBody(event);
+
+    logRequest(event, body);
 
     return makeRequest('POST', 'contracts', body);
   }),
