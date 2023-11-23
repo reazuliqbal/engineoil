@@ -1,6 +1,6 @@
 import { createError, readBody, sendError } from 'h3';
 import { ofetch } from 'ofetch';
-import { RESTRICTED_OPS, UPSTREAM } from './config.mjs';
+import { LOG, RESTRICTED_OPS, UPSTREAM } from './config.mjs';
 
 export const isValidQuery = (query) => {
   const keys = Object.keys(query);
@@ -17,7 +17,7 @@ export const makeRequest = async (method, endpoint = 'contracts', data) => {
     method,
     body: data,
     baseURL: UPSTREAM,
-  });
+  }).catch((error) => console.error(new Date().toISOString(), error));
 };
 
 export const isValidBody = async (event) => {
@@ -65,4 +65,20 @@ export const isValidBody = async (event) => {
   }
 
   return body;
+};
+
+export const logRequest = (event, body) => {
+  if (LOG) {
+    const { req } = event.node;
+
+    console.log(
+      new Date().toISOString(),
+      req.headers['cf-connecting-ip'] ||
+        req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress,
+      event.method,
+      event.path,
+      JSON.stringify(body),
+    );
+  }
 };
