@@ -26,4 +26,4 @@ Leave the `REDIS_URL` empty to use your local instance on localhost:6379
 - Click `Manage Witness` and change your RPC Port number to the EngineOil port and update.
 - Do not ever use the `witness_action.js` to update your witness settings.
 
-**This software is in active development, please use at your own risk. I should not be help responsible for anything.**
+**This software is in active development, please use at your own risk. I should not be held responsible for anything.**
