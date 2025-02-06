@@ -1,4 +1,4 @@
-import { createError, readBody, sendError } from 'h3';
+import { createError } from 'h3';
 import { ofetch } from 'ofetch';
 import { LOG, RESTRICTED_OPS, UPSTREAM } from './config.mjs';
 
@@ -7,6 +7,14 @@ export const isValidQuery = (query) => {
 
   if (keys.length <= 0) {
     return true;
+  }
+
+  if (keys.includes('$and') && (!Array.isArray(query.$and) || query.$and.length <= 0)) {
+    return false;
+  }
+
+  if (keys.includes('$or') && (!Array.isArray(query.$or) || query.$or.length <= 0)) {
+    return false;
   }
 
   return keys.some(k => !RESTRICTED_OPS.includes(k));
@@ -20,14 +28,9 @@ export const makeRequest = async (method, endpoint = 'contracts', data) => {
   }).catch(error => console.error(new Date().toISOString(), error));
 };
 
-export const isValidBody = async (event) => {
-  const body = await readBody(event);
-
+export const validatedBody = async (body) => {
   if (typeof body !== 'object') {
-    return sendError(
-      event,
-      createError({ statusCode: 400, statusMessage: 'Bad Request' }),
-    );
+    throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
   }
 
   if (Array.isArray(body)) {
@@ -37,15 +40,10 @@ export const isValidBody = async (event) => {
         && request.params.query
         && !isValidQuery(request.params.query)
       ) {
-        return sendError(
-          event,
-          createError({
-            statusCode: 400,
-            statusMessage: `You shouldn't use ${RESTRICTED_OPS.join(
-              ', ',
-            )} in queries.`,
-          }),
-        );
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Invalid or unsupported query',
+        });
       }
     }
   } else if (
@@ -53,15 +51,10 @@ export const isValidBody = async (event) => {
     && body.params.query
     && !isValidQuery(body.params.query)
   ) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: `You shouldn't use ${RESTRICTED_OPS.join(
-          ', ',
-        )} in queries.`,
-      }),
-    );
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Invalid or unsupported query`,
+    });
   }
 
   return body;
@@ -78,7 +71,7 @@ export const logRequest = (event, body) => {
       || req.socket.remoteAddress,
       event.method,
       event.path,
-      JSON.stringify(body),
+      body ? JSON.stringify(body) : '',
     );
   }
 };

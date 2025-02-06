@@ -1,6 +1,6 @@
 {
   "name": "engineoil",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Hive-Engine RPC caching layer",
   "main": "app.mjs",
   "scripts": {
@@ -13,17 +13,17 @@
   "author": "Reazul Iqbal",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "h3": "^1.9.0",
-    "ofetch": "^1.3.3",
-    "redis": "^4.6.11"
+    "dotenv": "^16.4.7",
+    "h3": "^1.14.0",
+    "ofetch": "^1.4.1",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
     "@stylistic/eslint-plugin": "^3.0.1",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
-    "prettier": "^3.1.0"
+    "prettier": "^3.4.2"
   },
   "repository": {
     "type": "git",

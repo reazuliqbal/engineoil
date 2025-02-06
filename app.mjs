@@ -9,7 +9,7 @@ import {
   toNodeListener,
 } from 'h3';
 import { CACHE_KEY, PORT } from './config.mjs';
-import { isValidBody, logRequest, makeRequest } from './helpers.mjs';
+import { validatedBody, logRequest, makeRequest } from './helpers.mjs';
 import redisClient from './libs/redis.mjs';
 
 const app = createApp();
@@ -46,7 +46,7 @@ router.get(
 router.post(
   '/',
   eventHandler(async (event) => {
-    const body = await isValidBody(event);
+    const body = await validatedBody(event);
 
     logRequest(event, body);
 
@@ -102,11 +102,13 @@ router.post(
 router.post(
   '/contracts',
   eventHandler(async (event) => {
-    const body = await isValidBody(event);
+    const body = await readBody(event);
 
     logRequest(event, body);
 
-    return makeRequest('POST', 'contracts', body);
+    const request = await validatedBody(body);
+
+    return makeRequest('POST', 'contracts', request);
   }),
 );
 
