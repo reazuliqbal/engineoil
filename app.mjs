@@ -15,7 +15,7 @@ import redisClient from './libs/redis.mjs';
 const app = createApp();
 
 app.use(
-  eventHandler((event) =>
+  eventHandler(event =>
     appendCorsPreflightHeaders(event, {
       origin: '*',
       methods: '*',
@@ -62,9 +62,9 @@ router.post(
     logRequest(event, body);
 
     if (
-      body.method === 'getBlockInfo' &&
-      body.params.blockNumber &&
-      !Number.isNaN(body.params.blockNumber)
+      body.method === 'getBlockInfo'
+      && body.params.blockNumber
+      && !Number.isNaN(body.params.blockNumber)
     ) {
       const block = await redisClient.get(
         `${CACHE_KEY}-${body.params.blockNumber}`,

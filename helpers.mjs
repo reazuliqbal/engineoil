@@ -9,7 +9,7 @@ export const isValidQuery = (query) => {
     return true;
   }
 
-  return keys.some((k) => !RESTRICTED_OPS.includes(k));
+  return keys.some(k => !RESTRICTED_OPS.includes(k));
 };
 
 export const makeRequest = async (method, endpoint = 'contracts', data) => {
@@ -17,7 +17,7 @@ export const makeRequest = async (method, endpoint = 'contracts', data) => {
     method,
     body: data,
     baseURL: UPSTREAM,
-  }).catch((error) => console.error(new Date().toISOString(), error));
+  }).catch(error => console.error(new Date().toISOString(), error));
 };
 
 export const isValidBody = async (event) => {
@@ -33,9 +33,9 @@ export const isValidBody = async (event) => {
   if (Array.isArray(body)) {
     for (const request of body) {
       if (
-        request.params &&
-        request.params.query &&
-        !isValidQuery(request.params.query)
+        request.params
+        && request.params.query
+        && !isValidQuery(request.params.query)
       ) {
         return sendError(
           event,
@@ -49,9 +49,9 @@ export const isValidBody = async (event) => {
       }
     }
   } else if (
-    body.params &&
-    body.params.query &&
-    !isValidQuery(body.params.query)
+    body.params
+    && body.params.query
+    && !isValidQuery(body.params.query)
   ) {
     return sendError(
       event,
@@ -73,9 +73,9 @@ export const logRequest = (event, body) => {
 
     console.log(
       new Date().toISOString(),
-      req.headers['cf-connecting-ip'] ||
-        req.headers['x-forwarded-for'] ||
-        req.socket.remoteAddress,
+      req.headers['cf-connecting-ip']
+      || req.headers['x-forwarded-for']
+      || req.socket.remoteAddress,
       event.method,
       event.path,
       JSON.stringify(body),
