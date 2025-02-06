@@ -106,9 +106,13 @@ router.post(
 
     logRequest(event, body);
 
-    const request = await validatedBody(body);
+    try {
+      const request = await validatedBody(body);
 
-    return makeRequest('POST', 'contracts', request);
+      return makeRequest('POST', 'contracts', request);
+    } catch (error) {
+      return error;
+    }
   }),
 );
 
