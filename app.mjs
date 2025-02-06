@@ -46,11 +46,17 @@ router.get(
 router.post(
   '/',
   eventHandler(async (event) => {
-    const body = await validatedBody(event);
+    const body = await readBody(event);
 
     logRequest(event, body);
 
-    return makeRequest('POST', '/', body);
+    try {
+      const request = await validatedBody(body);
+
+      return makeRequest('POST', '/', request);
+    } catch (error) {
+      return error;
+    }
   }),
 );
 
